@@ -81,6 +81,18 @@ namespace GameLib {
         return (x < a) ? a : (x > b) ? b : x;
 	}
 
+	// returns range 0 to 1 with 1 cycle per second
+	template <typename T>
+	T wave(T x, T cyclesPerSecond) {
+        return (T)std::sin(x * cyclesPerSecond * 6.28318531f) * 0.5f + 0.5f;
+	}
+
+	template <typename T>
+	T triangle(T x, T cyclesPerSecond) {
+        float t = x * cyclesPerSecond;
+        return (T)(2.0f * std::abs(t - std::floor(t + 0.5f)));
+	}
+
 	// Colors
     static const SDL_Color Black{ 0, 0, 0, 255 };
     static const SDL_Color Gray33{ 85, 85, 85, 255 };
@@ -104,14 +116,14 @@ namespace GameLib {
         { 228, 0, 114, 255 }, { 127, 63, 0, 255 }, { 212, 171, 56, 255 },  { 63, 127, 63, 255 },
     };
 
-	// mix is 0 - 7
+	// color1 (0-15), color2 (0-15), mix(0 - 7), neg(true/false)
 	inline SDL_Color MakeColor(int color1, int color2, int mix, bool neg) { 
 		const SDL_Color& c1 = LibXORColors[color1];
         const SDL_Color& c2 = LibXORColors[color2];
-        float t = clamp<float>(mix * 0.142857, 0.0f, 1.0f);
-        Uint8 r = (Uint8)clamp<int>(t * c1.r + (1.0f - t) * c2.r, 0, 255);
-        Uint8 g = (Uint8)clamp<int>(t * c1.g + (1.0f - t) * c2.g, 0, 255);
-        Uint8 b = (Uint8)clamp<int>(t * c1.b + (1.0f - t) * c2.b, 0, 255);
+        float t = clamp<float>(mix * 0.142857f, 0.0f, 1.0f);
+        Uint8 r = (Uint8)clamp<int>((int)(t * c1.r + (1.0f - t) * c2.r), 0, 255);
+        Uint8 g = (Uint8)clamp<int>((int)(t * c1.g + (1.0f - t) * c2.g), 0, 255);
+        Uint8 b = (Uint8)clamp<int>((int)(t * c1.b + (1.0f - t) * c2.b), 0, 255);
         if (neg) {
             r = 255 - r;
             g = 255 - g;
@@ -125,9 +137,9 @@ namespace GameLib {
         const SDL_Color& c1 = LibXORColors[color1];
         const SDL_Color& c2 = LibXORColors[color2];
         float t = clamp<float>(mix, 0.0f, 1.0f);
-        Uint8 r = (Uint8)clamp<int>(t * c1.r + (1.0f - t) * c2.r, 0, 255);
-        Uint8 g = (Uint8)clamp<int>(t * c1.g + (1.0f - t) * c2.g, 0, 255);
-        Uint8 b = (Uint8)clamp<int>(t * c1.b + (1.0f - t) * c2.b, 0, 255);
+        Uint8 r = (Uint8)clamp<int>((int)(t * c1.r + (1.0f - t) * c2.r), 0, 255);
+        Uint8 g = (Uint8)clamp<int>((int)(t * c1.g + (1.0f - t) * c2.g), 0, 255);
+        Uint8 b = (Uint8)clamp<int>((int)(t * c1.b + (1.0f - t) * c2.b), 0, 255);
         if (neg) {
             r = 255 - r;
             g = 255 - g;

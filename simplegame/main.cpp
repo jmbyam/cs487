@@ -303,8 +303,7 @@ int main(int argc, char** argv) {
 
         int x = (int)graphics.getCenterX();
         int y = (int)graphics.getCenterY();
-        float s = (std::sin(t1) * 0.5f + 0.5f);
-        //unsigned char c = GameLib::clamp<unsigned char>((std::sin(t1) * 0.5f + 0.5f) * 255.99f, 0, 255);
+        float s = GameLib::wave(t1, 1.0f);
         SDL_Color c = GameLib::MakeColorHI(7, 4, s, false);
         gothicfont.draw(x, y, "Runner", c, GameLib::Font::SHADOWED | GameLib::Font::HALIGN_CENTER | GameLib::Font::VALIGN_CENTER);
 

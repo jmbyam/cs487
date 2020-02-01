@@ -127,7 +127,7 @@ namespace GameLib {
                 y -= calcHeight();
 			}
             if (flags & SHADOWED) {
-                render(text, { 0, 0, 0, 255 });
+                render(text, Black);
                 draw(x + 2, y + 2);
             }
             render(text, fg);
@@ -285,7 +285,7 @@ int main(int argc, char** argv) {
         context.getEvents();
         input.handle();
 
-        context.clearScreen({ 255, 0, 255, 255 });
+        context.clearScreen(GameLib::Azure);
 
         for (unsigned x = 0; x < world.worldSizeX; x++) {
             for (unsigned y = 0; y < world.worldSizeY; y++) {
@@ -298,13 +298,17 @@ int main(int argc, char** argv) {
 
         world.update(dt, graphics);
 
-        minchofont.draw(0, 0, "Hello, world!", { 255, 255, 255, 255 }, GameLib::Font::SHADOWED);
-        gothicfont.draw((int)graphics.getWidth(), 0, "Hello, world!", { 255, 255, 255, 255 }, GameLib::Font::HALIGN_RIGHT);
+        minchofont.draw(0, 0, "Hello, world!", GameLib::Red, GameLib::Font::SHADOWED);
+        gothicfont.draw((int)graphics.getWidth(), 0, "Hello, world!", GameLib::Blue, GameLib::Font::HALIGN_RIGHT | GameLib::Font::SHADOWED);
 
         int x = (int)graphics.getCenterX();
         int y = (int)graphics.getCenterY();
-        unsigned char c = GameLib::clamp<unsigned char>((std::sin(t1) * 0.5f + 0.5f) * 255.99f, 0, 255);
-        gothicfont.draw(x, y, "Runner", { c, c, c, 255 }, GameLib::Font::SHADOWED | GameLib::Font::HALIGN_CENTER | GameLib::Font::VALIGN_CENTER);
+        float s = (std::sin(t1) * 0.5f + 0.5f);
+        //unsigned char c = GameLib::clamp<unsigned char>((std::sin(t1) * 0.5f + 0.5f) * 255.99f, 0, 255);
+        SDL_Color c = GameLib::MakeColorHI(7, 4, s, false);
+        gothicfont.draw(x, y, "Runner", c, GameLib::Font::SHADOWED | GameLib::Font::HALIGN_CENTER | GameLib::Font::VALIGN_CENTER);
+
+		minchofont.draw(0, (int)graphics.getHeight()-2, "HP: 56", GameLib::Gold, GameLib::Font::VALIGN_BOTTOM | GameLib::Font::SHADOWED);
 
         context.swapBuffers();
         frames++;

@@ -269,7 +269,7 @@ namespace GameLib {
         return SDL_RenderCopyEx(renderer_, t->texture, nullptr, &dstrect, spriteInfo.angle, &center, flip);
     }
 
-    void Context::clearScreen(glm::u8vec4 color) {
+    void Context::clearScreen(SDL_Color color) {
         SDL_SetRenderDrawColor(renderer_, color.r, color.g, color.b, color.a);
         SDL_RenderClear(renderer_);
     }

@@ -51,7 +51,7 @@ namespace GameLib {
         //////////////////////////////////////////////////////////////
 
         // clear the screen to a color
-        void clearScreen(glm::u8vec4 color);
+        void clearScreen(SDL_Color color);
 
         // swap the back buffer to the front
         void swapBuffers();

@@ -8,6 +8,7 @@
 #include <gamelib_world.hpp>
 #include <gamelib_locator.hpp>
 #include <gamelib_command.hpp>
+#include <gamelib_random.hpp>
 
 namespace GameLib {
 }

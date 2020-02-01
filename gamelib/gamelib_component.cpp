@@ -23,20 +23,20 @@ namespace GameLib {
         // We could make decisions here, start actions, etc
     }
 
-	void RandomActorComponent::update(Actor& actor, World& world) {
-
+    void RandomActorComponent::update(Actor& actor, World& world) {
         for (auto& a : world.actors) {
             if (a->getId() == actor.getId())
                 continue;
-            
         }
-	}
+    }
 
     void SimplePhysicsComponent::update(Actor& actor, World& world) {
         float ground = 400;
         actor.position += actor.dt * actor.speed * actor.velocity;
         if (actor.position.y > ground)
             actor.position.y = ground;
+        actor.position.x = clamp<float>(actor.position.x, 0, world.worldSizeX - 1);
+        actor.position.y = clamp<float>(actor.position.y, 0, world.worldSizeY - 1);
     }
 
     void SimpleGraphicsComponent::update(Actor& actor, Graphics& graphics) {

@@ -71,15 +71,54 @@ public:
 namespace GameLib {
     class Font {
     public:
+        static constexpr int CENTERED = 1 << 0;
+        static constexpr int SHADOWED = 1 << 1;
+
         Font(Context* context)
             : context_(context) {}
         ~Font();
         bool load(const std::string& path, int ptsize);
-        SDL_Surface* render(const char* text, SDL_Color fg);
+        SDL_Texture* render(const char* text, SDL_Color fg);
+        SDL_Texture* lastRender() { return texture_; }
+        void newRender() {
+            if (texture_) {
+                SDL_DestroyTexture(texture_);
+                texture_ = nullptr;
+            }
+            if (surface_) {
+                SDL_FreeSurface(surface_);
+                surface_ = nullptr;
+            }
+        }
+
+        int calcWidth(const char* text) {
+            int w{ 0 };
+            int h{ 0 };
+            if (font_)
+                TTF_SizeUTF8(font_, text, &w, &h);
+            return w;
+        }
+
+        void draw(int x, int y);
+
+        void draw(int x, int y, const char* text, SDL_Color fg, int flags) {
+            if (flags & CENTERED) {
+                x -= calcWidth(text) >> 1;
+            }
+            if (flags & SHADOWED) {
+                render(text, { 0, 0, 0, 255 });
+                draw(x + 2, y + 2);
+            }
+            render(text, fg);
+            draw(x, y);
+        }
 
     private:
         Context* context_{ nullptr };
         TTF_Font* font_{ nullptr };
+        SDL_Texture* texture_{ nullptr };
+        SDL_Surface* surface_{ nullptr };
+        SDL_Rect rect_;
     };
 
     Font::~Font() {
@@ -95,10 +134,24 @@ namespace GameLib {
         return font_ != nullptr;
     }
 
-    SDL_Surface* Font::render(const char* text, SDL_Color fg) {
+    SDL_Texture* Font::render(const char* text, SDL_Color fg) {
         if (!font_)
             return nullptr;
-        return TTF_RenderText_Blended(font_, text, fg);
+        newRender();
+        surface_ = TTF_RenderText_Blended(font_, text, fg);
+        if (surface_) {
+            rect_.w = surface_->w;
+            rect_.h = surface_->h;
+            texture_ = SDL_CreateTextureFromSurface(context_->renderer(), surface_);
+        }
+        return texture_;
+    }
+
+    void Font::draw(int x, int y) {
+        rect_.x = x;
+        rect_.y = y;
+        SDL_Renderer* renderer_ = context_->renderer();
+        SDL_RenderCopy(renderer_, texture_, nullptr, &rect_);
     }
 }
 
@@ -158,10 +211,10 @@ int main(int argc, char** argv) {
     context.loadMusicClip(1, "starbattlemusic2.mp3");
     context.loadMusicClip(2, "distoro2.mid");
 
-    GameLib::Font liberationFont(&context);
-    GameLib::Font urwclassicoFont(&context);
-    liberationFont.load("LiberationSans-Regular.ttf", 18);
-    urwclassicoFont.load("URWClassico-Bold.ttf", 18);
+    GameLib::Font gothicfont(&context);
+    GameLib::Font minchofont(&context);
+    gothicfont.load("fonts-japanese-gothic.ttf", 36);
+    minchofont.load("fonts-japanese-mincho.ttf", 36);
 
     GameLib::World world;
     GameLib::Locator::provide(&world);
@@ -224,16 +277,13 @@ int main(int argc, char** argv) {
 
         world.update(dt, graphics);
 
-        SDL_Surface* dst = context.windowSurface();
-        SDL_Surface* text = urwclassicoFont.render("Hello, World", { 255, 255, 255, 255 });
-        if (text) {
-            SDL_Texture* texture = SDL_CreateTextureFromSurface(context.renderer(), text);
-            SDL_Rect rect{ 0, 0, text->w, text->h };
-            SDL_BlitSurface(text, nullptr, dst, &rect);
-            context.drawTexture({ 0, 0 }, { text->w, text->h }, texture);
-            SDL_FreeSurface(text);
-            SDL_DestroyTexture(texture);
-        }
+        minchofont.draw(0, 0, "Hello, world!", { 255, 255, 255, 255 }, GameLib::Font::SHADOWED);
+        gothicfont.draw(0, 36, "Hello, world!", { 255, 255, 255, 255 }, 0);
+
+        int x = (int)graphics.getCenterX();
+        int y = (int)graphics.getCenterY();
+        unsigned char c = GameLib::clamp<unsigned char>((std::sin(t1) * 0.5f + 0.5f) * 255.99f, 0, 255);
+        gothicfont.draw(x, y, "Runner", { c, c, c, 255 }, GameLib::Font::SHADOWED | GameLib::Font::CENTERED);
 
         context.swapBuffers();
         frames++;

@@ -71,8 +71,13 @@ public:
 namespace GameLib {
     class Font {
     public:
-        static constexpr int CENTERED = 1 << 0;
-        static constexpr int SHADOWED = 1 << 1;
+        static constexpr int HALIGN_LEFT = 0;
+        static constexpr int HALIGN_CENTER = 1 << 0;
+        static constexpr int HALIGN_RIGHT = 1 << 1;
+        static constexpr int VALIGN_TOP = 1 << 2;
+        static constexpr int VALIGN_CENTER = 1 << 3;
+        static constexpr int VALIGN_BOTTOM = 1 << 4;
+        static constexpr int SHADOWED = 1 << 5;
 
         Font(Context* context)
             : context_(context) {}
@@ -91,20 +96,36 @@ namespace GameLib {
             }
         }
 
+		// calculates the width of the string text
         int calcWidth(const char* text) {
             int w{ 0 };
-            int h{ 0 };
             if (font_)
-                TTF_SizeUTF8(font_, text, &w, &h);
+                TTF_SizeUTF8(font_, text, &w, nullptr);
             return w;
         }
+
+		// calculates the height of the loaded font
+        int calcHeight() const { return TTF_FontHeight(font_); }
+
+		// returns the height of the rendered string
+		int height() const { return rect_.h; }
+		// returns the width of the renderered string
+        int width() const { return rect_.w; }
 
         void draw(int x, int y);
 
         void draw(int x, int y, const char* text, SDL_Color fg, int flags) {
-            if (flags & CENTERED) {
+            if (flags & HALIGN_CENTER) {
                 x -= calcWidth(text) >> 1;
+            } else if (flags & HALIGN_RIGHT) {
+                x -= calcWidth(text);
             }
+            if (flags & VALIGN_TOP) {
+            } else if (flags & VALIGN_CENTER) {
+                y -= calcHeight() >> 1;
+            } else if (flags & VALIGN_BOTTOM) {
+                y -= calcHeight();
+			}
             if (flags & SHADOWED) {
                 render(text, { 0, 0, 0, 255 });
                 draw(x + 2, y + 2);
@@ -278,12 +299,12 @@ int main(int argc, char** argv) {
         world.update(dt, graphics);
 
         minchofont.draw(0, 0, "Hello, world!", { 255, 255, 255, 255 }, GameLib::Font::SHADOWED);
-        gothicfont.draw(0, 36, "Hello, world!", { 255, 255, 255, 255 }, 0);
+        gothicfont.draw((int)graphics.getWidth(), 0, "Hello, world!", { 255, 255, 255, 255 }, GameLib::Font::HALIGN_RIGHT);
 
         int x = (int)graphics.getCenterX();
         int y = (int)graphics.getCenterY();
         unsigned char c = GameLib::clamp<unsigned char>((std::sin(t1) * 0.5f + 0.5f) * 255.99f, 0, 255);
-        gothicfont.draw(x, y, "Runner", { c, c, c, 255 }, GameLib::Font::SHADOWED | GameLib::Font::CENTERED);
+        gothicfont.draw(x, y, "Runner", { c, c, c, 255 }, GameLib::Font::SHADOWED | GameLib::Font::HALIGN_CENTER | GameLib::Font::VALIGN_CENTER);
 
         context.swapBuffers();
         frames++;

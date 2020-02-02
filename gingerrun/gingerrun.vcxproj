@@ -155,7 +155,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlienActorComponent.cpp" />
+    <ClCompile Include="CollisionPhysicsComponent.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="gingerrun.cpp" />
+    <ClCompile Include="RandomInputComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlienActorComponent.hpp" />
+    <ClInclude Include="CollisionPhysicsComponent.hpp" />
+    <ClInclude Include="Font.hpp" />
+    <ClInclude Include="RandomInputComponent.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

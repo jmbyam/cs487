@@ -18,9 +18,6 @@
     <ClCompile Include="gingerrun.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RandomInputComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,11 +27,14 @@
     <ClCompile Include="CollisionPhysicsComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AlienInputComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GingerbreadInputComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RandomInputComponent.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Font.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,6 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CollisionPhysicsComponent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlienInputComponent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GingerbreadInputComponent.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,28 @@
 #include "CollisionPhysicsComponent.hpp"
 
 void CollisionPhysicsComponent::update(GameLib::Actor& actor, GameLib::World& world) {
+    glm::vec3 prevPosition = actor.position;
+    actor.velocity.y += actor.dt * 9.8f;
+	SimplePhysicsComponent::update(actor, world);
+    if (prevPosition.y == actor.position.y) {
+        actor.velocity.y = 0;
+	}
+
     // do collision detection
+    for (auto& a : world.actors) {
+        if (!a->active)
+            continue;
+        if (a->getId() == actor.getId())
+            continue;
+        if (collides(*a, actor)) {
+            glm::vec3 nextPosition = actor.position;
+            actor.position = prevPosition;
+            if (!collides(*a, actor)) {
+				// due to the previous position
+            }
+            HFLOGDEBUG("boom! between %d and %d", a->getId(), actor.getId());
+		}
+	}
 }
 
 bool CollisionPhysicsComponent::collides(GameLib::Actor& a, GameLib::Actor& b) {

@@ -1,7 +1,7 @@
 #pragma once
 #include <gamelib.hpp>
 
-class CollisionPhysicsComponent : public GameLib::PhysicsComponent {
+class CollisionPhysicsComponent : public GameLib::SimplePhysicsComponent {
 public:
     virtual ~CollisionPhysicsComponent() {}
 

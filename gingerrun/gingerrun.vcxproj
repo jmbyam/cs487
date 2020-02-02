@@ -158,14 +158,16 @@
     <ClCompile Include="AlienActorComponent.cpp" />
     <ClCompile Include="CollisionPhysicsComponent.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="GingerbreadInputComponent.cpp" />
     <ClCompile Include="gingerrun.cpp" />
-    <ClCompile Include="RandomInputComponent.cpp" />
+    <ClCompile Include="AlienInputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlienActorComponent.hpp" />
     <ClInclude Include="CollisionPhysicsComponent.hpp" />
     <ClInclude Include="Font.hpp" />
-    <ClInclude Include="RandomInputComponent.hpp" />
+    <ClInclude Include="AlienInputComponent.hpp" />
+    <ClInclude Include="GingerbreadInputComponent.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

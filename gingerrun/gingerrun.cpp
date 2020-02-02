@@ -2,7 +2,11 @@
 // by Dr. Jonathan Metzgar et al
 // UAF CS Game Design and Architecture Course
 #include <gamelib.hpp>
-#include <gamelib_random.hpp>
+#include "Font.hpp"
+#include "AlienActorComponent.hpp"
+#include "AlienInputComponent.hpp"
+#include "CollisionPhysicsComponent.hpp"
+#include "GingerbreadInputComponent.hpp"
 
 #pragma comment(lib, "gamelib.lib")
 
@@ -110,11 +114,11 @@ int main(int argc, char** argv) {
     SDL_Texture* testPNG = context.loadImage("godzilla.png");
     SDL_Texture* testJPG = context.loadImage("parrot.jpg");
     graphics.setTileSize(32, 32);
-    int spriteCount = context.loadTileset(0, 32, 32, "Tiles32x32.png");
+    int spriteCount = context.loadTileset(0, 32, 32, "GingerRun.png");
     if (!spriteCount) {
         HFLOGWARN("Tileset not found");
     }
-    spriteCount = context.loadTileset(1, 32, 32, "uglygingerbreadman.png");
+    spriteCount = context.loadTileset(1, 32, 32, "GingerRun.png");
 
     context.loadAudioClip(0, "starbattle-bad.wav");
     context.loadAudioClip(1, "starbattle-dead.wav");
@@ -143,20 +147,23 @@ int main(int argc, char** argv) {
     Hf::StopWatch stopwatch;
     double spritesDrawn = 0;
     double frames = 0;
-    GameLib::Actor player(new GameLib::SimpleInputComponent(),
+    float globalSpeed = 16.0f;
+    //(float)graphics.getTileSizeX();
+    GameLib::Actor player(new GingerbreadInputComponent(),
                           new GameLib::SimpleActorComponent(),
-                          new GameLib::SimplePhysicsComponent(),
+						  new CollisionPhysicsComponent(),
                           new GameLib::SimpleGraphicsComponent());
-    player.speed = (float)graphics.getTileSizeX();
+    player.speed = globalSpeed;
     player.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX();
     player.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
-    player.spriteId = 2;
+    player.spriteLibId = 1;
+    player.spriteId = 0;
     world.actors.push_back(&player);
 
     GameLib::Actor alienActor(
-        new RandomInputComponent(),
-		new GameLib::SimpleActorComponent(),
-		new GameLib::SimplePhysicsComponent(),
+        new AlienInputComponent(),
+		new AlienActorComponent(),
+		new CollisionPhysicsComponent(),
 		new GameLib::SimpleGraphicsComponent());
 
     world.actors.push_back(&alienActor);
@@ -164,7 +171,7 @@ int main(int argc, char** argv) {
     alienActor.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
     alienActor.spriteLibId = 1;
     alienActor.spriteId = 0;
-    alienActor.speed = (float)graphics.getTileSizeX();
+    alienActor.speed = globalSpeed;
 
     float t0 = stopwatch.Stop_sf();
 
@@ -182,14 +189,14 @@ int main(int argc, char** argv) {
 
         context.clearScreen(GameLib::Azure);
 
-        for (unsigned x = 0; x < world.worldSizeX; x++) {
-            for (unsigned y = 0; y < world.worldSizeY; y++) {
-                GameLib::SPRITEINFO s;
-                s.position = { x * 32, y * 32 };
-                auto t = world.getTile(x, y);
-                context.drawTexture(s.position, 0, t.charDesc);
-            }
-        }
+        //for (unsigned x = 0; x < world.worldSizeX; x++) {
+        //    for (unsigned y = 0; y < world.worldSizeY; y++) {
+        //        GameLib::SPRITEINFO s;
+        //        s.position = { x * 32, y * 32 };
+        //        auto t = world.getTile(x, y);
+        //        context.drawTexture(s.position, 0, t.charDesc);
+        //    }
+        //}
 
         world.update(dt, graphics);
 

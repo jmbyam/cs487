@@ -60,6 +60,8 @@ namespace GameLib {
         uint spriteId{ 0 };
         // sprite library number for this object
         uint spriteLibId{ 0 };
+        bool spriteFlipX{ false };
+        bool spriteFlipY{ false };
 
         // is object visible for drawing
         ubool visible{ true };

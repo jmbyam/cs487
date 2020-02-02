@@ -35,8 +35,8 @@ namespace GameLib {
         actor.position += actor.dt * actor.speed * actor.velocity;
         if (actor.position.y > ground)
             actor.position.y = ground;
-        actor.position.x = clamp<float>(actor.position.x, 0, world.worldSizeX - 1);
-        actor.position.y = clamp<float>(actor.position.y, 0, world.worldSizeY - 1);
+        actor.position.x = clamp<float>(actor.position.x, 0, (float)world.worldSizeX - actor.size.x);
+        actor.position.y = clamp<float>(actor.position.y, 0, (float)world.worldSizeY - actor.size.y);
     }
 
     void SimpleGraphicsComponent::update(Actor& actor, Graphics& graphics) {

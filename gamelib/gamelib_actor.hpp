@@ -79,10 +79,13 @@ namespace GameLib {
         float dt;
 
         // current position
-        glm::vec3 position;
+        glm::vec3 position{ 0.0f, 0.0f, 0.0f };
+
+        // size (assume 1 = grid size)
+        glm::vec3 size{ 1.0f, 1.0f, 1.0f };
 
         // current velocity
-        glm::vec3 velocity;
+        glm::vec3 velocity{ 0.0f, 0.0f, 0.0f };
 
         // maximum speed
         float speed{ 16.0f };

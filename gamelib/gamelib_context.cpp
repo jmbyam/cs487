@@ -406,16 +406,16 @@ namespace GameLib {
         SDL_Surface* surface = IMG_Load(p.c_str());
         if (!surface)
             return 0;
-        SDL_Surface* tile = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
-        if (!tile) {
-            SDL_FreeSurface(surface);
-            return 0;
-        }
         int tileCount = 0;
         SDL_Rect dstrect{ 0, 0, w, h };
         auto tileset = _initTileset(tilesetId);
         for (int y = 0; y < surface->h; y += h) {
             for (int x = 0; x < surface->w; x += w) {
+                SDL_Surface* tile = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
+                if (!tile) {
+                    SDL_FreeSurface(surface);
+                    return 0;
+                }
                 SDL_Rect srcrect{ x, y, w, h };
                 SDL_BlitSurface(surface, &srcrect, tile, &dstrect);
                 _addTile(tilesetId, tile);

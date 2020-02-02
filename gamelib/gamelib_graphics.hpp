@@ -18,6 +18,7 @@ namespace GameLib {
         virtual void setTileSize(int w, int h) {}
         virtual void draw(int tileSetId, int tileId, int x, int y) {}
         virtual void draw(int tileSetId, int tileId, float x, float y) {}
+        virtual void draw(int tileSetId, int tileId, int x, int y, int flipFlags) {}
     };
 
     class Graphics : public IGraphics {
@@ -36,7 +37,7 @@ namespace GameLib {
 
         void draw(int tileSetId, int tileId, int x, int y) override;
         void draw(int tileSetId, int tileId, float x, float y) override;
-
+        void draw(int tileSetId, int tileId, int x, int y, int flipFlags) override;
     private:
         int tileSizeX_{ 0 };
         int tileSizeY_{ 0 };

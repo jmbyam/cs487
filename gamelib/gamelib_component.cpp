@@ -31,10 +31,7 @@ namespace GameLib {
     }
 
     void SimplePhysicsComponent::update(Actor& actor, World& world) {
-        float ground = 400;
         actor.position += actor.dt * actor.speed * actor.velocity;
-        if (actor.position.y > ground)
-            actor.position.y = ground;
         actor.position.x = clamp<float>(actor.position.x, 0, (float)world.worldSizeX - actor.size.x);
         actor.position.y = clamp<float>(actor.position.y, 0, (float)world.worldSizeY - actor.size.y);
     }
@@ -42,6 +39,7 @@ namespace GameLib {
     void SimpleGraphicsComponent::update(Actor& actor, Graphics& graphics) {
         glm::vec3 tileSize{ graphics.getTileSizeX(), graphics.getTileSizeY(), 0 };
         glm::vec3 pos = actor.position * tileSize;
-        graphics.draw(actor.spriteLibId, actor.spriteId, pos.x, pos.y);
+        int flipFlags = actor.spriteFlipX ? 1 : actor.spriteFlipY ? 2 : 0;
+        graphics.draw(actor.spriteLibId, actor.spriteId, pos.x, pos.y, flipFlags);
     }
 }

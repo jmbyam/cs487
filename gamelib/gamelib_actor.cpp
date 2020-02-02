@@ -9,6 +9,7 @@ namespace GameLib {
         : transform(1.0f)
         , addlTransform(1.0f)
         , input_(input)
+        , actor_(actor)
         , physics_(physics)
         , graphics_(graphics) {
         id_ = idSource_++;

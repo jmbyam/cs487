@@ -7,6 +7,8 @@
 #include "AlienInputComponent.hpp"
 #include "CollisionPhysicsComponent.hpp"
 #include "GingerbreadInputComponent.hpp"
+#include "ColumnActorComponent.hpp"
+#include "ColumnGraphicsComponent.hpp"
 
 #pragma comment(lib, "gamelib.lib")
 
@@ -149,10 +151,8 @@ int main(int argc, char** argv) {
     double frames = 0;
     float globalSpeed = 16.0f;
     //(float)graphics.getTileSizeX();
-    GameLib::Actor player(new GingerbreadInputComponent(),
-                          new GameLib::SimpleActorComponent(),
-						  new CollisionPhysicsComponent(),
-                          new GameLib::SimpleGraphicsComponent());
+    GameLib::Actor player(
+        new GingerbreadInputComponent(), new GameLib::SimpleActorComponent(), new CollisionPhysicsComponent(), new GameLib::SimpleGraphicsComponent());
     player.speed = globalSpeed;
     player.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX();
     player.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
@@ -160,18 +160,28 @@ int main(int argc, char** argv) {
     player.spriteId = 0;
     world.actors.push_back(&player);
 
-    GameLib::Actor alienActor(
-        new AlienInputComponent(),
-		new AlienActorComponent(),
-		new CollisionPhysicsComponent(),
-		new GameLib::SimpleGraphicsComponent());
+    GameLib::Actor alienActor(new AlienInputComponent(), new AlienActorComponent(), new CollisionPhysicsComponent(), new GameLib::SimpleGraphicsComponent());
 
     world.actors.push_back(&alienActor);
-    alienActor.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX();
+    alienActor.position.x = 0;
     alienActor.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
     alienActor.spriteLibId = 1;
     alienActor.spriteId = 0;
     alienActor.speed = globalSpeed;
+
+    std::vector<GameLib::Actor*> columns;
+    for (int i = 0; i < world.worldSizeX; i++) {
+        GameLib::Actor *actor = new GameLib::Actor(nullptr, new ColumnActorComponent(), new GameLib::SimplePhysicsComponent(), new ColumnGraphicsComponent());
+        columns.push_back(actor);
+        world.actors.push_back(actor);
+        actor->clipToWorld = false;
+        actor->position.x = (float)i;
+        actor->position.y = (float)world.worldSizeY - 1;
+        actor->velocity.x = -1;
+        actor->spriteLibId = 1;
+        actor->spriteId = 1;
+        actor->speed = 0.25f * globalSpeed;        
+    }
 
     float t0 = stopwatch.Stop_sf();
 
@@ -189,7 +199,7 @@ int main(int argc, char** argv) {
 
         context.clearScreen(GameLib::Azure);
 
-        //for (unsigned x = 0; x < world.worldSizeX; x++) {
+        // for (unsigned x = 0; x < world.worldSizeX; x++) {
         //    for (unsigned y = 0; y < world.worldSizeY; y++) {
         //        GameLib::SPRITEINFO s;
         //        s.position = { x * 32, y * 32 };

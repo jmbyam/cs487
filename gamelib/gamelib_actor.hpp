@@ -67,6 +67,8 @@ namespace GameLib {
         ubool visible{ true };
         // is actor active for updating
         ubool active{ true };
+		// is object used for physics
+        ubool clipToWorld{ true };
 
         // transform that takes this object to world space
         glm::mat4 transform;

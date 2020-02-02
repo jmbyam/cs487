@@ -20,7 +20,7 @@ void CollisionPhysicsComponent::update(GameLib::Actor& actor, GameLib::World& wo
             if (!collides(*a, actor)) {
 				// due to the previous position
             }
-            HFLOGDEBUG("boom! between %d and %d", a->getId(), actor.getId());
+            //HFLOGDEBUG("boom! between %d and %d", a->getId(), actor.getId());
 		}
 	}
 }

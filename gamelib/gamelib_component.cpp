@@ -32,8 +32,10 @@ namespace GameLib {
 
     void SimplePhysicsComponent::update(Actor& actor, World& world) {
         actor.position += actor.dt * actor.speed * actor.velocity;
-        actor.position.x = clamp<float>(actor.position.x, 0, (float)world.worldSizeX - actor.size.x);
-        actor.position.y = clamp<float>(actor.position.y, 0, (float)world.worldSizeY - actor.size.y);
+        if (actor.clipToWorld) {
+            actor.position.x = clamp<float>(actor.position.x, 0, (float)world.worldSizeX - actor.size.x);
+            actor.position.y = clamp<float>(actor.position.y, 0, (float)world.worldSizeY - actor.size.y);
+        }
     }
 
     void SimpleGraphicsComponent::update(Actor& actor, Graphics& graphics) {

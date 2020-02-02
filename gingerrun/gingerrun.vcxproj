@@ -157,6 +157,8 @@
   <ItemGroup>
     <ClCompile Include="AlienActorComponent.cpp" />
     <ClCompile Include="CollisionPhysicsComponent.cpp" />
+    <ClCompile Include="ColumnActorComponent.cpp" />
+    <ClCompile Include="ColumnGraphicsComponent.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GingerbreadInputComponent.cpp" />
     <ClCompile Include="gingerrun.cpp" />
@@ -165,6 +167,8 @@
   <ItemGroup>
     <ClInclude Include="AlienActorComponent.hpp" />
     <ClInclude Include="CollisionPhysicsComponent.hpp" />
+    <ClInclude Include="ColumnActorComponent.hpp" />
+    <ClInclude Include="ColumnGraphicsComponent.hpp" />
     <ClInclude Include="Font.hpp" />
     <ClInclude Include="AlienInputComponent.hpp" />
     <ClInclude Include="GingerbreadInputComponent.hpp" />

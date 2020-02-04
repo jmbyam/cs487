@@ -1,6 +1,8 @@
 // Ginger Run
 // by Dr. Jonathan Metzgar et al
 // UAF CS Game Design and Architecture Course
+
+// Addapted by Joseph to do something... eventually...
 #include <gamelib.hpp>
 #include "SpiderActorComponent.hpp"
 #include "SpiderInputComponent.hpp"

@@ -1,0 +1,24 @@
+40 across by 37 down
+
+Start at top left 1X1
+
+Player: 3 across, 9 down
+Enemy: 16 across, 2 down
+V-Walls: 0 across, 26 down
+H-Walls: 2 across, 26 down
+Spawn Point: 10 across, 21 down
+Blood Trail: 9 across, 12 down
+Death Specter: 17 across, 9 down
+
+Survive 1 minute to WIN!!!!
+
+New spider spawns every 10 seconds from the pit in the center of the map
+(adjust this to make appropriately difficult)
+
+If you collide with a spider then you're half dead (you know when you're half dead because a blood trail follows you) - blood desponds after 5 seconds of being laid down
+	If you survive 5 second
+		you're back to full health
+	else
+		you die
+
+When you die the Reaper spends by you're body and spiders fill the screen

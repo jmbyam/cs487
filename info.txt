@@ -2,13 +2,13 @@
 
 Start at top left 1X1
 
-Player: 3 across, 9 down
-Enemy: 16 across, 2 down
-V-Walls: 0 across, 26 down
-H-Walls: 2 across, 26 down
+Player: 3 across, 9 down -- 362
+Enemy: 16 across, 2 down -- 95
+V-Walls: 0 across, 26 down -- 1040
+H-Walls: 2 across, 26 down -- 1042
 Spawn Point: 10 across, 21 down
 Blood Trail: 9 across, 12 down
-Death Specter: 17 across, 9 down
+Death Specter: 17 across, 9 down -- 377
 
 Survive 1 minute to WIN!!!!
 

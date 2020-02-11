@@ -2,6 +2,7 @@
 // by Dr. Jonathan Metzgar et al
 // UAF CS Game Design and Architecture Course
 #include <gamelib.hpp>
+#include "DungeonActorComponent.hpp"
 
 #pragma comment(lib, "gamelib.lib")
 
@@ -96,7 +97,7 @@ namespace GameLib {
             }
         }
 
-		// calculates the width of the string text
+        // calculates the width of the string text
         int calcWidth(const char* text) {
             int w{ 0 };
             if (font_)
@@ -104,12 +105,12 @@ namespace GameLib {
             return w;
         }
 
-		// calculates the height of the loaded font
+        // calculates the height of the loaded font
         int calcHeight() const { return TTF_FontHeight(font_); }
 
-		// returns the height of the rendered string
-		int height() const { return rect_.h; }
-		// returns the width of the renderered string
+        // returns the height of the rendered string
+        int height() const { return rect_.h; }
+        // returns the width of the renderered string
         int width() const { return rect_.w; }
 
         void draw(int x, int y);
@@ -125,7 +126,7 @@ namespace GameLib {
                 y -= calcHeight() >> 1;
             } else if (flags & VALIGN_BOTTOM) {
                 y -= calcHeight();
-			}
+            }
             if (flags & SHADOWED) {
                 render(text, Black);
                 draw(x + 2, y + 2);
@@ -239,41 +240,54 @@ int main(int argc, char** argv) {
 
     GameLib::World world;
     GameLib::Locator::provide(&world);
-    std::string worldPath = context.findSearchPath("world.txt");
+    std::string worldPath = context.findSearchPath("worldForRunning.txt");
     if (!world.load(worldPath)) {
-        HFLOGWARN("world.txt not found");
+        HFLOGWARN("worldForRunning.txt not found");
     }
 
     Hf::StopWatch stopwatch;
     double spritesDrawn = 0;
     double frames = 0;
     GameLib::Actor player(new GameLib::SimpleInputComponent(),
-                          new GameLib::SimpleActorComponent(),
-                          new GameLib::SimplePhysicsComponent(),
+                          new GameLib::DainNickJosephWorldCollidingActorComponent(),
+                          new GameLib::DainNickJosephWorldPhysicsComponent(),
                           new GameLib::SimpleGraphicsComponent());
     player.speed = (float)graphics.getTileSizeX();
-    player.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX();
+    player.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX() - 6;
     player.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
-    player.spriteId = 2;
+    player.spriteId = 362;
+    player.speed = 4.0f;
 
     // GameLib::MoveAction moveAction;
     // moveAction.setActor(&player);
 
-    world.actors.push_back(&player);
+    world.addDynamicActor(&player);
 
-    GameLib::Actor randomPlayer(new GameLib::RandomInputComponent(),
-                                new GameLib::SimpleActorComponent(),
-                                new GameLib::SimplePhysicsComponent(),
-                                new GameLib::SimpleGraphicsComponent());
+    GameLib::Actor randomPlayer1(new GameLib::RandomInputComponent(),
+                                 new GameLib::ActorComponent(),
+                                 new GameLib::TraceCurtisDynamicActorComponent(),
+                                 new GameLib::SimpleGraphicsComponent());
 
-    world.actors.push_back(&randomPlayer);
-    randomPlayer.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX();
-    randomPlayer.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
-    randomPlayer.spriteId = 1;
-    randomPlayer.speed = (float)graphics.getTileSizeX();
+    world.addDynamicActor(&randomPlayer1);
+    randomPlayer1.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX() + 3;
+    randomPlayer1.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
+    randomPlayer1.spriteId = 95;
+    randomPlayer1.speed = (float)graphics.getTileSizeX();
+
+    GameLib::Actor randomPlayer2(new GameLib::RandomInputComponent(),
+                                 new GameLib::ActorComponent(),
+                                 new GameLib::TraceCurtisDynamicActorComponent(),
+                                 new GameLib::SimpleGraphicsComponent());
+
+    world.addDynamicActor(&randomPlayer2);
+    randomPlayer2.position.x = graphics.getCenterX() / (float)graphics.getTileSizeX() + 6;
+    randomPlayer2.position.y = graphics.getCenterY() / (float)graphics.getTileSizeY();
+    randomPlayer2.spriteId = 377;
+    randomPlayer2.speed = (float)graphics.getTileSizeX();
 
     float t0 = stopwatch.Stop_sf();
-
+    float lag = 0.0f;
+    constexpr float MS_PER_UPDATE = 0.001f;
     while (!context.quitRequested) {
         float t1 = stopwatch.Stop_sf();
         float dt = t1 - t0;
@@ -281,14 +295,15 @@ int main(int argc, char** argv) {
         GameLib::Context::deltaTime = dt;
         GameLib::Context::currentTime_s = t1;
         GameLib::Context::currentTime_ms = t1 * 1000;
+        lag += dt;
 
         context.getEvents();
         input.handle();
 
         context.clearScreen(GameLib::Azure);
 
-        for (unsigned x = 0; x < world.worldSizeX; x++) {
-            for (unsigned y = 0; y < world.worldSizeY; y++) {
+        for (int x = 0; x < world.worldSizeX; x++) {
+            for (int y = 0; y < world.worldSizeY; y++) {
                 GameLib::SPRITEINFO s;
                 s.position = { x * 32, y * 32 };
                 auto t = world.getTile(x, y);
@@ -296,18 +311,31 @@ int main(int argc, char** argv) {
             }
         }
 
-        world.update(dt, graphics);
+        while (lag >= MS_PER_UPDATE) {
+            world.update(MS_PER_UPDATE);
+            world.physics(MS_PER_UPDATE);
+            lag -= MS_PER_UPDATE;
+        }
+        world.draw(graphics);
 
         minchofont.draw(0, 0, "Hello, world!", GameLib::Red, GameLib::Font::SHADOWED);
         gothicfont.draw((int)graphics.getWidth(), 0, "Hello, world!", GameLib::Blue, GameLib::Font::HALIGN_RIGHT | GameLib::Font::SHADOWED);
 
         int x = (int)graphics.getCenterX();
-        int y = (int)graphics.getCenterY();
+        int y = (int)graphics.getCenterY() >> 1;
         float s = GameLib::wave(t1, 1.0f);
         SDL_Color c = GameLib::MakeColorHI(7, 4, s, false);
-        gothicfont.draw(x, y, "Runner", c, GameLib::Font::SHADOWED | GameLib::Font::HALIGN_CENTER | GameLib::Font::VALIGN_CENTER);
+        gothicfont.draw(x, y, "Collisions", c, GameLib::Font::SHADOWED | GameLib::Font::HALIGN_CENTER | GameLib::Font::VALIGN_CENTER);
 
-		minchofont.draw(0, (int)graphics.getHeight()-2, "HP: 56", GameLib::Gold, GameLib::Font::VALIGN_BOTTOM | GameLib::Font::SHADOWED);
+        minchofont.draw(0, (int)graphics.getHeight() - 2, "HP: 56", GameLib::Gold, GameLib::Font::VALIGN_BOTTOM | GameLib::Font::SHADOWED);
+
+        char fpsstr[64] = { 0 };
+        snprintf(fpsstr, 64, "%3.2f", 1.0f / dt);
+        minchofont.draw((int)graphics.getWidth(),
+                        (int)graphics.getHeight() - 2,
+                        fpsstr,
+                        GameLib::Gold,
+                        GameLib::Font::HALIGN_RIGHT | GameLib::Font::VALIGN_BOTTOM | GameLib::Font::SHADOWED);
 
         context.swapBuffers();
         frames++;

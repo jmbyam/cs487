@@ -3,6 +3,8 @@
 // UAF CS Game Design and Architecture Course
 #include <gamelib.hpp>
 #include "DungeonActorComponent.hpp"
+#include "ShadowActorComponent.hpp"
+#include "ShadowInputComponent.hpp"
 
 #pragma comment(lib, "gamelib.lib")
 
@@ -215,23 +217,11 @@ int main(int argc, char** argv) {
 
     context.addSearchPath("./assets");
     context.addSearchPath("../assets");
-    SDL_Texture* testPNG = context.loadImage("godzilla.png");
-    SDL_Texture* testJPG = context.loadImage("parrot.jpg");
     graphics.setTileSize(32, 32);
-    int spriteCount = context.loadTileset(0, 32, 32, "Tiles32x32.png");
+    int spriteCount = context.loadTileset(0, 32, 32, "Walking.png");
     if (!spriteCount) {
         HFLOGWARN("Tileset not found");
     }
-
-    context.loadAudioClip(0, "starbattle-bad.wav");
-    context.loadAudioClip(1, "starbattle-dead.wav");
-    context.loadAudioClip(2, "starbattle-endo.wav");
-    context.loadAudioClip(3, "starbattle-exo.wav");
-    context.loadAudioClip(4, "starbattle-ok.wav");
-    context.loadAudioClip(5, "starbattle-pdead.wav");
-    context.loadMusicClip(0, "starbattlemusic1.mp3");
-    context.loadMusicClip(1, "starbattlemusic2.mp3");
-    context.loadMusicClip(2, "distoro2.mid");
 
     GameLib::Font gothicfont(&context);
     GameLib::Font minchofont(&context);
@@ -240,7 +230,7 @@ int main(int argc, char** argv) {
 
     GameLib::World world;
     GameLib::Locator::provide(&world);
-    std::string worldPath = context.findSearchPath("worldForRunning.txt");
+    std::string worldPath = context.findSearchPath("shadowWorld.txt");
     if (!world.load(worldPath)) {
         HFLOGWARN("worldForRunning.txt not found");
     }
@@ -249,7 +239,7 @@ int main(int argc, char** argv) {
     double spritesDrawn = 0;
     double frames = 0;
     GameLib::Actor player(new GameLib::SimpleInputComponent(),
-                          new GameLib::DainNickJosephWorldCollidingActorComponent(),
+                          new GameLib::ActorComponent(),
                           new GameLib::DainNickJosephWorldPhysicsComponent(),
                           new GameLib::SimpleGraphicsComponent());
     player.speed = (float)graphics.getTileSizeX();
@@ -318,14 +308,10 @@ int main(int argc, char** argv) {
         }
         world.draw(graphics);
 
-        minchofont.draw(0, 0, "Hello, world!", GameLib::Red, GameLib::Font::SHADOWED);
-        gothicfont.draw((int)graphics.getWidth(), 0, "Hello, world!", GameLib::Blue, GameLib::Font::HALIGN_RIGHT | GameLib::Font::SHADOWED);
-
         int x = (int)graphics.getCenterX();
         int y = (int)graphics.getCenterY() >> 1;
         float s = GameLib::wave(t1, 1.0f);
         SDL_Color c = GameLib::MakeColorHI(7, 4, s, false);
-        gothicfont.draw(x, y, "Collisions", c, GameLib::Font::SHADOWED | GameLib::Font::HALIGN_CENTER | GameLib::Font::VALIGN_CENTER);
 
         minchofont.draw(0, (int)graphics.getHeight() - 2, "HP: 56", GameLib::Gold, GameLib::Font::VALIGN_BOTTOM | GameLib::Font::SHADOWED);
 
